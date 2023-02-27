@@ -6,7 +6,6 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("./schema/userData");
-const createUser = require("./routes/createUser")
 app.use(express.json())
 app.use(cors())
 
