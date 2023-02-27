@@ -30,7 +30,7 @@ app.post('/signup',async (req,res)=>{
         return res.send({msg : "Username already taken. Please try another one"})
     }
     if(numberExists){
-        return res.send({msg : "Number already exists. Please try another one"})
+        return res.send({msg : "Number already exists. Please login"})
     }
     else{
         try {
