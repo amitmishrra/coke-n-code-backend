@@ -1,6 +1,7 @@
 const express = require("express");
 const connection = require("./connection");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -33,13 +34,16 @@ app.post('/signup',async (req,res)=>{
     }
     else{
         try {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+        
             await User.create({
-                fullName,
-                username,
-                email,
-                number,
-                password
-            })
+              fullName,
+              username,
+              email,
+              number,
+              password: hashedPassword,
+            });
             res.send({msg : "User created successfully"}).status(200)
         } catch (error) {
             console.log("error", error);
@@ -49,26 +53,27 @@ app.post('/signup',async (req,res)=>{
 })
 
 
-app.post("/login-user",async (req, res)=>{
-    const {email, password} = req.body;
-    const user = await User.findOne({email})
-
-    try{
-        if(!user){
-            return res.send({msg : "User not found"})
+app.post("/login-user", async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+  
+    try {
+      if (!user) {
+        return res.send({ msg: "User not found" });
+      }
+      else{
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (passwordMatch) {
+          return res.send({ msg: "Logged in successfully" });
+        } else {
+          return res.send({ msg: "Incorrect password. Please try again" });
         }
-        if(user && user.password == password){
-            return res.send({msg : "Logged in succesfully"})
-        }
-    
-        if(user && user.password != password){
-            return res.send({msg : "Incorrect Password. Please try again"})
-        }
-    }catch(e){
-        console.log(e)
+      }
+    } catch (error) {
+      console.log(error);
+      res.send({ msg: "Something went wrong. Please try again later" }).status(500);
     }
-
-})
+  });
 
 app.get("/getUsers/edWnUT1XmSiN2p4Ld2gxYxo2EkNpRjbH",async (req, res)=>{
     const users = await User.find()
