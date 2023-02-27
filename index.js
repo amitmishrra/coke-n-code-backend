@@ -17,22 +17,35 @@ app.listen(PORT, ()=>{
 
 
 const User = mongoose.model("userData");
-app.post('/postData',async (req,res)=>{
-    const {fullName, email, number, password} = req.body;
-    try {
-
-        await User.create({
-            fullName,
-            email,
-            number,
-            password
-        })
-        res.send({msg : "acc created"})
-    } catch (error) {
-        // console.log("error", error);
-        res.send({msg : "User Already exists"})
+app.post('/signup',async (req,res)=>{
+    const {fullName, username,  email, number, password} = req.body;
+    const mailExists = await User.findOne({email})
+    const usernameExists = await User.findOne({username})
+    const numberExists = await User.findOne({number})
+    if(mailExists){
+        return res.send({msg : "User already exists. Please login"})
     }
-        
+    if(usernameExists){
+        return res.send({msg : "Username already taken. Please try another one"})
+    }
+    if(numberExists){
+        return res.send({msg : "Number already exists. Please try another one"})
+    }
+    else{
+        try {
+            await User.create({
+                fullName,
+                username,
+                email,
+                number,
+                password
+            })
+            res.send({msg : "User created successfully"}).status(200)
+        } catch (error) {
+            console.log("error", error);
+            res.send({msg : "Something went wrong. Please try again later"}).status(500)
+        }
+    }      
 })
 
 
@@ -49,7 +62,7 @@ app.post("/login-user",async (req, res)=>{
         }
     
         if(user && user.password != password){
-            return res.send({msg : "Incorrect Password"})
+            return res.send({msg : "Incorrect Password. Please try again"})
         }
     }catch(e){
         console.log(e)
@@ -57,7 +70,7 @@ app.post("/login-user",async (req, res)=>{
 
 })
 
-app.get("/getUsers",async (req, res)=>{
+app.get("/getUsers/edWnUT1XmSiN2p4Ld2gxYxo2EkNpRjbH",async (req, res)=>{
     const users = await User.find()
    res.send(users);
 })
