@@ -43,6 +43,7 @@ app.post('/signup',async (req,res)=>{
               email,
               number,
               password: hashedPassword,
+              avatar :  Math.floor(Math.random() * 10) + 1
             });
             res.send({msg : "User created successfully"}).status(200)
         } catch (error) {
@@ -77,5 +78,10 @@ app.post("/login-user", async (req, res) => {
 
 app.get("/getUsers/edWnUT1XmSiN2p4Ld2gxYxo2EkNpRjbH",async (req, res)=>{
     const users = await User.find()
+   res.send(users);
+})
+
+app.get("/getUsers/:username",async (req, res)=>{
+    const users = await User.find({username : req.params.username})
    res.send(users);
 })

@@ -18,7 +18,8 @@ const userDataSchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        password : String
+        password : String, 
+        avatar : Number
     },{
         collection : "userData"
     }
