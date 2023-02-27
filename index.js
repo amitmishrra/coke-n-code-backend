@@ -17,6 +17,10 @@ app.listen(PORT, ()=>{
 });
 
 
+app.get("/", (req, res) => {
+    res.send("Welcome to COKE-N-CODE");
+  });
+
 const User = mongoose.model("userData");
 app.post('/signup',async (req,res)=>{
     const {fullName, username,  email, number, password} = req.body;
