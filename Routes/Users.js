@@ -33,18 +33,14 @@ function auth(req, res, next) {
 
 //SIGNUP USER
 Users.post('/signup', async (req, res) => {
-    const { fullName, username, email, number, password } = req.body;
+    const { fullName, username, email, password } = req.body;
     const mailExists = await User.findOne({ email });
     const usernameExists = await User.findOne({ username });
-    const numberExists = await User.findOne({ number });
     if (mailExists) {
         return res.send({ msg: 'User already exists. Please login' });
     }
     if (usernameExists) {
         return res.send({ msg: 'Username already taken. Please try another one' });
-    }
-    if (numberExists) {
-        return res.send({ msg: 'Number already exists. Please login' });
     } else {
         try {
             const salt = await bcrypt.genSalt(10);
@@ -54,7 +50,6 @@ Users.post('/signup', async (req, res) => {
                 fullName,
                 username,
                 email,
-                number,
                 password: hashedPassword,
                 avatar: Math.floor(Math.random() * 10) + 1,
             });
