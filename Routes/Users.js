@@ -173,5 +173,37 @@ Users.put('/changePassword', async (req, res) => {
     }
 });
 
+//CHANGE PASSWORD
+Users.put('/changePassword/:id', async (req, res) => {
+    const { password, newPassword } = req.body;
+   const user = await User.findById(req.params.id);
+    try{
+        if(!user){
+            return res.send({msg: "User not found"}).status(404);
+        }
+        else{
+            if(password === newPassword){
+                return res.send({msg: "New password cannot be same as old password"}).status(400);
+            }
+            else{
+                const passwordMatch = await bcrypt.compare(password, user.password);
+                if(passwordMatch){
+                    const salt = await bcrypt.genSalt(10);
+                    const hashedPassword = await bcrypt.hash(newPassword, salt);
+                    user.password = hashedPassword;
+                    await user.save();
+                    return res.send({msg: "Password changed successfully"});
+                }
+                else{
+                    return res.send({msg: "Incorrect password. Please try again"});
+                }
+            }
+        }
+    }catch(error){
+        console.log(error);
+        res.send({msg: "Something went wrong. Please try again later"}).status(500);
+    }
+});
+
 
 module.exports = Users;
