@@ -112,6 +112,16 @@ Users.get('/getUsers/:username',  async (req, res) => {
     }
 });
 
+Users.get('/getUsers/:email' ,async (req, res) => {
+    const singleUser = await User.find({ email: req.params.email });
+    if (singleUser) {
+        res.send(singleUser).status(200);
+    }
+    else {
+        res.send({ msg: 'User not found' }).status(404);
+    }
+});
+
 //DELETE USER BY USERNAME
 Users.delete('/deleteUser/:username', auth, async (req, res) => {
     const userExist = await User.deleteOne({ username: req.params.username });
