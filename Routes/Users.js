@@ -102,7 +102,7 @@ Users.get('/getUsers', auth ,async (req, res) => {
 });
 
 //GET USER BY USERNAME
-Users.get('/getUsers/:username',  async (req, res) => {
+Users.get('/getUsers/byUsername/:username',  async (req, res) => {
     const singleUser = await User.find({ username: req.params.username });
     if (singleUser) {
         res.send(singleUser).status(200);
@@ -112,7 +112,7 @@ Users.get('/getUsers/:username',  async (req, res) => {
     }
 });
 
-Users.get('/getUsers/:email' ,async (req, res) => {
+Users.get('/getUsers/byEmail/:email' ,async (req, res) => {
     const singleUser = await User.find({ email: req.params.email });
     if (singleUser) {
         res.send(singleUser).status(200);
